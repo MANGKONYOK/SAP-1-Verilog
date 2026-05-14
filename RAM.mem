@@ -1,5 +1,5 @@
 // SAP-1 Memory (8 bits)
-// Opcode: 0=LDR, 1=ADD, 2=SUB, 3=MUL, 4=DIV, 5=OUT A, 6=OUT B, 7=HLT
+// Opcode: 0=LDR, 1=ADD, 2=SUB, 3=MUL, 4=DIV, 5=OUTA, 6=OUTB, 7=HLT
 
 00001001 // Address 0: LDR 9 (Load 5 into Reg A)
 00011010 // Address 1: ADD 10 (A = A + 3 -> 8)
