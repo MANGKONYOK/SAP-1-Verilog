@@ -8,7 +8,7 @@ module CPU_tb();
     wire [7:0] out;
 
     // Instantiate top module
-    CPU Top_CPU (clk, reset, out);
+    CPU uut_CPU (clk, reset, out);
 
     // Create master clock
     always begin

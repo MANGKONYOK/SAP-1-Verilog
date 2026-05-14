@@ -1,147 +1,84 @@
 module CPU (
-    input wire CLK,
-    input wire RESET,
-    output wire [7:0] OUT_DATA
+    input wire clk,
+    input wire reset,
+    output wire [7:0] out
 );
-
-    // -------------------------------------------------------------------------
-    // 1. Control Word and Control Signals
-    // -------------------------------------------------------------------------
-    wire [15:0] CTRL_WORD;
+    // Control word and Control Signals
+    wire [15:0] CW;
     
-    // Control Word Split: {PE, PO, MI, RO, II, IO, AI, AO, EO, CI, S0, S1, BI, BO, OI, HLT}
-    wire PE  = CTRL_WORD[15];
-    wire PO  = CTRL_WORD[14];
-    wire MI  = CTRL_WORD[13];
-    wire RO  = CTRL_WORD[12];
-    wire II  = CTRL_WORD[11];
-    wire IO  = CTRL_WORD[10];
-    wire AI  = CTRL_WORD[9];
-    wire AO  = CTRL_WORD[8];
-    wire EO  = CTRL_WORD[7];
-    wire CI  = CTRL_WORD[6];
-    wire S0  = CTRL_WORD[5];
-    wire S1  = CTRL_WORD[4];
-    wire BI  = CTRL_WORD[3];
-    wire BO  = CTRL_WORD[2];
-    wire OI  = CTRL_WORD[1];
-    wire HLT = CTRL_WORD[0];
+    // Control Words: PE, PO, MI, RO, II, IO, AI, AO, EO, CI, S0, S1, BI, BO, OI, HLT
+    wire PE  = CW[15];
+    wire PO  = CW[14];
+    wire MI  = CW[13];
+    wire RO  = CW[12];
+    wire II  = CW[11];
+    wire IO  = CW[10];
+    wire AI  = CW[9];
+    wire AO  = CW[8];
+    wire EO  = CW[7];
+    wire CI  = CW[6];
+    wire S0  = CW[5];
+    wire S1  = CW[4];
+    wire BI  = CW[3];
+    wire BO  = CW[2];
+    wire OI  = CW[1];
+    wire HLT = CW[0];
 
-    // -------------------------------------------------------------------------
-    // 2. Internal Wires (Buses and Data Lines)
-    // -------------------------------------------------------------------------
+    // Internal wires
     wire [7:0] W_bus;
     
-    wire [3:0] pc_out;
-    wire [3:0] mar_out;
-    wire [7:0] ram_out;
-    wire [3:0] ir_opcode;
-    wire [3:0] ir_addr;
-    wire [7:0] regA_out;
-    wire [7:0] regB_out;
-    wire [7:0] regC_out;
-    wire [7:0] alu_out;
+    wire [3:0] PC_out;
+    wire [3:0] MAR_out;
+    wire [7:0] RAM_out;
+    wire [3:0] IR_opcode;
+    wire [3:0] IR_addr;
+    wire [7:0] RA_out;
+    wire [7:0] RB_out;
+    wire [7:0] RC_out;
+    wire [7:0] ALU_out;
 
-    // -------------------------------------------------------------------------
-    // 3. Mux-Based W-Bus Implementation
-    // -------------------------------------------------------------------------
-    assign W_bus = (PO) ? {4'b0000, pc_out} :
-                   (IO) ? {4'b0000, ir_addr} :
-                   (RO) ? ram_out :
-                   (AO) ? regA_out :
-                   (BO) ? regB_out :
-                   (EO) ? alu_out  :
+    // W-Bus Implementation
+    assign W_bus = (PO) ? {4'b0000, PC_out} :
+                   (IO) ? {4'b0000, IR_addr} :
+                   (RO) ? RAM_out :
+                   (AO) ? RA_out :
+                   (BO) ? RB_out :
+                   (EO) ? ALU_out  :
                    8'b00000000;
 
-    // -------------------------------------------------------------------------
-    // 4. Sub-Module Instantiations
-    // -------------------------------------------------------------------------
+    // Sub-Module Instantiations
     
     // Program Counter (PC)
-    PC u_PC (
-        .CLK(CLK),
-        .RESET(RESET),
-        .PE(PE),
-        .pc_out(pc_out)
-    );
+    PC uut_PC (clk, reset, PE, PC_out);
 
     // Memory Address Register (MAR)
-    MAR u_MAR (
-        .CLK(CLK),
-        .MI(MI),
-        .data_in(W_bus[3:0]), // Lower 4 bits from W-bus
-        .mar_out(mar_out)
-    );
+    MAR uut_MAR (clk, MI, W_bus[3:0], MAR_out);
 
     // RAM (Memory)
-    RAM u_RAM (
-        .addr(mar_out),
-        .data_out(ram_out) // Connected to W-Bus via Mux when RO=1
-    );
+    RAM uut_RAM (MAR_out, RAM_out);
 
     // Instruction Register (IR)
-    IR u_IR (
-        .CLK(CLK),
-        .RESET(RESET),
-        .II(II),
-        .data_in(W_bus),
-        .ir_opcode(ir_opcode),
-        .ir_addr(ir_addr)
-    );
+    IR uut_IR (clk, reset, II, W_bus, IR_opcode, IR_addr);
 
     // Control Unit (CU)
-    // Triggering on negative edge or utilizing inverted clock internally
-    wire inv_CLK = ~CLK;
-    CU u_CU (
-        .opcode(ir_opcode),
-        .CLK(inv_CLK), 
-        .RESET(RESET),
-        .CTRL_WORD(CTRL_WORD)
-    );
+    // Triggering on negative edge or utilizing inverted clock
+    wire inv_clk = ~clk;
+    CU uut_CU (IR_opcode, inv_clk, reset, CW);
 
     // Register A
-    Register u_RegA (
-        .CLK(CLK),
-        .RESET(RESET),
-        .Load_Enable(AI),
-        .data_in(W_bus),
-        .reg_out(regA_out)
-    );
+    Register uut_RegA (clk, reset, AI, W_bus, RA_out);
 
     // Register B
-    Register u_RegB (
-        .CLK(CLK),
-        .RESET(RESET),
-        .Load_Enable(BI),
-        .data_in(W_bus),
-        .reg_out(regB_out)
-    );
+    Register uut_RegB (clk, reset, BI, W_bus, RB_out);
 
     // Register C (Directly loaded from ALU as per modified spec)
     // Note: If CI is active, it takes from ALU, otherwise keeps old value
-    Register u_RegC (
-        .CLK(CLK),
-        .RESET(RESET),
-        .Load_Enable(CI),
-        .data_in(alu_out), // Directly from ALU!
-        .reg_out(regC_out)
-    );
+    Register uut_RegC (clk, reset, CI, ALU_out, RC_out);
 
     // ALU
-    ALU u_ALU (
-        .A(regA_out),
-        .C(regC_out),
-        .S({S1, S0}),
-        .alu_out(alu_out)
-    );
+    ALU uut_ALU (RA_out, RC_out, {S1, S0}, ALU_out);
 
     // Output Register (OUT)
-    Register u_RegOUT (
-        .CLK(CLK),
-        .RESET(RESET),
-        .Load_Enable(OI),
-        .data_in(W_bus),
-        .reg_out(OUT_DATA)
-    );
+    Register uut_RegOUT (clk, reset, OI, W_bus, out);
 
 endmodule
