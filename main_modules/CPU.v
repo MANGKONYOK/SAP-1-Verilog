@@ -66,19 +66,19 @@ module CPU (
     CU uut_CU (IR_opcode, inv_clk, reset, CW);
 
     // Register A
-    Register uut_RegA (clk, reset, AI, W_bus, RA_out);
+    Register uut_Ra (clk, reset, AI, W_bus, RA_out);
 
     // Register B
-    Register uut_RegB (clk, reset, BI, W_bus, RB_out);
+    Register uut_Rb (clk, reset, BI, W_bus, RB_out);
 
     // Register C (Directly loaded from ALU as per modified spec)
     // Note: If CI is active, it takes from ALU, otherwise keeps old value
-    Register uut_RegC (clk, reset, CI, ALU_out, RC_out);
+    Register uut_Rc (clk, reset, CI, ALU_out, RC_out);
 
     // ALU
     ALU uut_ALU (RA_out, RC_out, {S1, S0}, ALU_out);
 
     // Output Register (OUT)
-    Register uut_RegOUT (clk, reset, OI, W_bus, out);
+    Register uut_Output (clk, reset, OI, W_bus, out);
 
 endmodule
