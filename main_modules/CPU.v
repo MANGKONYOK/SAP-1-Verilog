@@ -36,7 +36,7 @@ module CPU (
     wire [7:0] RB_out;
     wire [7:0] RC_out;
     wire [7:0] ALU_out;
-    wire [7:0] ALU_upper; // Upper 8 bits (exceed value) from MUL/DIV
+    wire [7:0] ALU_upper; // Upper 8 bits from MUL/DIV
 
     // W-Bus Implementation
     assign W_bus = (PO) ? {4'b0000, PC_out} :
