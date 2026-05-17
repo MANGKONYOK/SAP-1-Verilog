@@ -7,22 +7,22 @@ module CPU (
     wire [15:0] CW;
     
     // Control Words: PE, PO, MI, RO, II, IO, AI, AO, EO, CI, S0, S1, BI, BO, OI, HLT
-    wire PE  = CW[15];
-    wire PO  = CW[14];
-    wire MI  = CW[13];
-    wire RO  = CW[12];
-    wire II  = CW[11];
-    wire IO  = CW[10];
-    wire AI  = CW[9];
-    wire AO  = CW[8];
-    wire EO  = CW[7];
-    wire CI  = CW[6];
-    wire S0  = CW[5];
-    wire S1  = CW[4];
-    wire BI  = CW[3];
-    wire BO  = CW[2];
-    wire OI  = CW[1];
-    wire HLT = CW[0];
+    wire PE  = CW[15]; // PC Enable
+    wire PO  = CW[14]; // PC Out
+    wire MI  = CW[13]; // MAR In 
+    wire RO  = CW[12]; // RAM Out
+    wire II  = CW[11]; // IR In
+    wire IO  = CW[10]; // IR Out
+    wire AI  = CW[9];  // 
+    wire AO  = CW[8];  // Program Counter Enable
+    wire EO  = CW[7];  // Program Counter Enable
+    wire CI  = CW[6];  // Program Counter Enable
+    wire S0  = CW[5];  // Program Counter Enable
+    wire S1  = CW[4];  // Program Counter Enable
+    wire BI  = CW[3];  // Program Counter Enable
+    wire BO  = CW[2];  // Program Counter Enable
+    wire OI  = CW[1];  // Program Counter Enable
+    wire HLT = CW[0];  // Program Counter Enable
 
     // Internal wires
     wire [7:0] W_bus;
@@ -70,7 +70,7 @@ module CPU (
     Register uut_Ra (clk, reset, AI, W_bus, RA_out);
 
     // Register B (Directly loaded from ALU's exceed/upper output as per diagram)
-    // Note: If BI is active, it takes the upper 8-bits from ALU (for MUL/DIV)
+    // If BI is active, it takes the upper 8-bits from ALU (for MUL/DIV)
     Register uut_Rb (clk, reset, BI, ALU_upper, RB_out);
 
     // Register C
@@ -80,6 +80,6 @@ module CPU (
     ALU uut_ALU (RA_out, RC_out, {S1, S0}, ALU_out, ALU_upper);
 
     // Output Register (OUT)
-    Register uut_Output (clk, reset, OI, W_bus, out);
+    Register uut_Rout (clk, reset, OI, W_bus, out);
 
 endmodule
