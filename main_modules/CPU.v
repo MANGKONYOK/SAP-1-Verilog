@@ -36,6 +36,7 @@ module CPU (
     wire [7:0] RB_out;
     wire [7:0] RC_out;
     wire [7:0] ALU_out;
+    wire [7:0] ALU_upper; // Upper 8 bits (exceed value) from MUL/DIV
 
     // W-Bus Implementation
     assign W_bus = (PO) ? {4'b0000, PC_out} :
@@ -68,15 +69,15 @@ module CPU (
     // Register A
     Register uut_Ra (clk, reset, AI, W_bus, RA_out);
 
-    // Register B
-    Register uut_Rb (clk, reset, BI, W_bus, RB_out);
+    // Register B (Directly loaded from ALU's exceed/upper output as per diagram)
+    // Note: If BI is active, it takes the upper 8-bits from ALU (for MUL/DIV)
+    Register uut_Rb (clk, reset, BI, ALU_upper, RB_out);
 
-    // Register C (Directly loaded from ALU as per modified spec)
-    // Note: If CI is active, it takes from ALU, otherwise keeps old value
-    Register uut_Rc (clk, reset, CI, ALU_out, RC_out);
+    // Register C
+    Register uut_Rc (clk, reset, CI, W_bus, RC_out);
 
-    // ALU
-    ALU uut_ALU (RA_out, RC_out, {S1, S0}, ALU_out);
+    // ALU (Outputs lower 8-bits to W_bus via EO, and upper 8-bits to Reg B)
+    ALU uut_ALU (RA_out, RC_out, {S1, S0}, ALU_out, ALU_upper);
 
     // Output Register (OUT)
     Register uut_Output (clk, reset, OI, W_bus, out);
