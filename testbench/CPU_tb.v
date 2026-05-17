@@ -21,6 +21,9 @@ module CPU_tb();
         $dumpfile("cpu_waveforms.vcd");
         $dumpvars(0, CPU_tb);
 
+        // Console output monitoring
+        $monitor("Time: %0t | clk: %b | reset: %b | out (Dec): %0d | out (Bin): %08b", $time, clk, reset, out, out);
+
         // Initialize clock
         clk = 0;
 
