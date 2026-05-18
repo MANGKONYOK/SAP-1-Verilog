@@ -24,6 +24,8 @@ module ALU(
     input [7:0] ra_in,
     input [7:0] rb_in,
     input su,
+    input mu,
+    input di,
     input eu,
     output [7:0] bus_out
     );
@@ -32,16 +34,18 @@ module ALU(
     reg [7:0] rb_mod = 8'b0000_0000;
     
     always @(*) begin 
-        if (su) begin
-            rb_mod = ~rb_in; // 1st-complement
+        if (mu) begin
+            result = ra_in * rb_in;
+        end else if (di) begin
+            if (rb_in == 8'b0000_0000) result =  8'b0000_0000; // Prevent x/0
+            else result = ra_in / rb_in;
         end else begin
-            rb_mod = rb_in;
+            if (su) rb_mod = ~rb_in; // 1st-complement
+            else rb_mod = rb_in;
+            result = ra_in + rb_mod + su;
         end
+    end
         
-        result = ra_in + rb_mod + su; // if (su) then +1 to make 2nd-complement; Using "+" cost FPGA to build an adder.
-        
-     end
-    
     assign bus_out = (eu) ? result : 8'bzzzz_zzzz;
     
     

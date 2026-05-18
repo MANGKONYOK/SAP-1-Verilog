@@ -36,7 +36,7 @@ module CPU (
     wire [7:0] regb_to_alu;    
 
     // The 12-Bit Control Word Wires
-    wire cp, ep, lm_n, ce_n, li_n, ei_n, la_n, ea, su, eu, lb_n, lo_n;
+    wire cp, ep, lm_n, ce_n, li_n, ei_n, la_n, ea, su, mu, di, eu, lb_n, lo_n;
 
     // --- INSTANTIATIONS ---
     // Notice how 'clk' goes directly into the modules now!
@@ -46,8 +46,8 @@ module CPU (
         .clr_n(reset_n),
         .opcode(ir_opcode),
         .cp(cp), .ep(ep), .lm_n(lm_n), .ce_n(ce_n), .li_n(li_n), 
-        .ei_n(ei_n), .la_n(la_n), .ea(ea), .su(su), .eu(eu), 
-        .lb_n(lb_n), .lo_n(lo_n)
+        .ei_n(ei_n), .la_n(la_n), .ea(ea), .su(su), .mu(mu), .di(di),
+         .eu(eu), .lb_n(lb_n), .lo_n(lo_n)
     );
 
     PC PC (
@@ -101,6 +101,8 @@ module CPU (
         .ra_in(accum_to_alu),
         .rb_in(regb_to_alu),
         .su(su),
+        .mu(mu),
+        .di(di),
         .eu(eu),
         .bus_out(w_bus)  
     );

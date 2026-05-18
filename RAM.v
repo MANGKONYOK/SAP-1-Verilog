@@ -34,7 +34,10 @@ module RAM(
             memory[i] = 8'b0000_0000;
         end
         
-        $readmemb("data.mem", memory);
+//        $readmemb("add-sub.mem", memory); // Addition and Subtraction
+//        $readmemb("mul-div.mem", memory); // Multiplication and Division
+//        $readmemb("all-operations.mem", memory); // All operations
+        $readmemb("assignment.mem", memory); // Assignment
     end
     
     assign bus_out = (!ce_n) ? memory[addr_in] : 8'bzzzz_zzzz;

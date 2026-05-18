@@ -1,0 +1,20 @@
+// SAP-1 Memory (8 bits)
+// Opcodes matched to Control_unit.v: 
+// Opcodes: 0=LDR, 1=ADD, 2=SUB, 3=MUL, 4=DIV, 5=OUTA, F=HLT
+
+00000011 // Address 0: LDA 3 (Load Accumulator with data at Addr 3)
+00010110 // Address 1: ADD 6 (Add data at Addr 6 to Accumulator)
+11110000 // Address 2: HLT   (Halt execution)
+00000100 // Address 3: Data = 4 (Memory Assumption 1)
+00000000 // Address 4: (Empty)
+00000000 // Address 5: (Empty)
+00000101 // Address 6: Data = 5 (Memory Assumption 2)
+00000000 // Address 7: (Empty)
+00000000 // Address 8: (Empty)
+00000000 // Address 9: (Empty)
+00000000 // Address 10: (Empty)
+00000000 // Address 11: (Empty)
+00000000 // Address 12: (Empty)
+00000000 // Address 13: (Empty)
+00000000 // Address 14: (Empty)
+00000000 // Address 15: (Empty)
