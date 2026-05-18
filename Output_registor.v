@@ -24,10 +24,10 @@ module Output_registor(
     input [7:0] bus_in,
     input lo_n,
     input clk,
-    output display_out
+    output [7:0] display_out
     );
     
-    reg reg_dis = 8'b0000_0000;
+    reg [7:0] reg_dis = 8'b0000_0000;
     
     always @(posedge clk) begin
         if (!lo_n) begin

@@ -24,7 +24,7 @@ module B_register(
     input [7:0] bus_in,
     input lb_n,
     input clk,
-    output alu_out
+    output [7:0] alu_out
     );
     
     reg [7:0] reg_b = 8'b0000_0000;

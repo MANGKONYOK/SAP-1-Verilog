@@ -27,9 +27,14 @@ module RAM(
     );
     
     reg [7:0] memory [0:15];
+    integer i;
     
     initial begin
-        $readmemb("RAM.mem", memory);
+        for (i = 0; i < 16; i = i + 1) begin
+            memory[i] = 8'b0000_0000;
+        end
+        
+        $readmemb("data.mem", memory);
     end
     
     assign bus_out = (!ce_n) ? memory[addr_in] : 8'bzzzz_zzzz;
