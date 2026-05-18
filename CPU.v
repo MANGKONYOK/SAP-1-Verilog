@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
-// Engineer: Peeranat Ngk. 3429
+// Engineer:
 // 
 // Create Date: 05/18/2026 05:35:47 PM
 // Design Name: 
@@ -15,31 +15,25 @@
 // 
 // Revision:
 // Revision 0.01 - File Created
-// Additional Comments: Generated code - Please recheck
+// Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
 
 module CPU (
-    input clk,             // Driven directly by the Vivado Testbench
-    input reset_n,         // Driven by the Vivado Testbench
-    output [7:0] out_leds  // Watched by the Vivado waveform viewer
+    input clk,
+    input reset_n,
+    output [7:0] out_leds
 );
 
-    // The Shared W-Bus
     wire [7:0] w_bus;
 
-    // Dedicated Point-to-Point Wires
     wire [3:0] mar_to_ram;     
     wire [3:0] ir_opcode;      
     wire [7:0] accum_to_alu;   
     wire [7:0] regb_to_alu;    
 
-    // The 12-Bit Control Word Wires
     wire cp, ep, lm_n, ce_n, li_n, ei_n, la_n, ea, su, mu, di, eu, lb_n, lo_n;
-
-    // --- INSTANTIATIONS ---
-    // Notice how 'clk' goes directly into the modules now!
 
     Control_unit CU (
         .clk(clk),
@@ -47,7 +41,7 @@ module CPU (
         .opcode(ir_opcode),
         .cp(cp), .ep(ep), .lm_n(lm_n), .ce_n(ce_n), .li_n(li_n), 
         .ei_n(ei_n), .la_n(la_n), .ea(ea), .su(su), .mu(mu), .di(di),
-         .eu(eu), .lb_n(lb_n), .lo_n(lo_n)
+        .eu(eu), .lb_n(lb_n), .lo_n(lo_n)
     );
 
     PC PC (

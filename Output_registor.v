@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
-// Engineer: Peeranat Ngk. 
+// Engineer:
 // 
 // Create Date: 05/18/2026 05:16:22 AM
 // Design Name: 
